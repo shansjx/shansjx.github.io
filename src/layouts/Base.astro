@@ -1,0 +1,45 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = '' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+
+		<!-- scroll-craft engine: never edited per project. Theme it with the tokens below. -->
+		<link rel="stylesheet" href="/scrollcraft/scrollcraft.css" />
+		<style is:global>
+			/* Placeholder theme. Six colours and two fonts; replace once the brief is written. */
+			:root {
+				--sc-canvas: #0b0c0e;
+				--sc-surface: #15171a;
+				--sc-ink: #eeeae4;
+				--sc-ink-soft: #a29d95;
+				--sc-accent: #e8623a;
+				--sc-accent-ink: #120d0b;
+				--sc-font-display: system-ui, sans-serif;
+				--sc-font-text: system-ui, sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<slot />
+
+		<script is:inline src="/scrollcraft/scrollcraft.js"></script>
+		<script is:inline>
+			ScrollCraft.mount(document.body);
+		</script>
+	</body>
+</html>
