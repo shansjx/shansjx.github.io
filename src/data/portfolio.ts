@@ -181,13 +181,6 @@ export const earlierProjects: IndexItem[] = [
 	},
 	{
 		when: 'NYP',
-		name: 'Covid-19 web service',
-		context: 'Team project',
-		line: 'A business web service with CRUD and object-oriented Python.',
-		tools: 'Python, Flask, Bootstrap',
-	},
-	{
-		when: 'NYP',
 		name: 'Art website',
 		context: 'Solo, my first site',
 		line: 'A site about art, built from the fundamentals.',
