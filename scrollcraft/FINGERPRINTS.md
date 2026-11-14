@@ -28,9 +28,8 @@ changes only grammar and world will fail it.
 
 | Build | Grammar | Nav treatment | Hero device | Act-sequence shape | Close pattern | Signature move | World | Port |
 |---|---|---|---|---|---|---|---|---|
+| shana-portfolio (pass 1, 2026-11-14) | Chaptered editorial | No bar; vertical margin folio (roman numeral + chapter title), bottom-right chip on phones | Title page: oversized name on grid paper with a line-drawn cat on its baseline whose eyes follow the pointer | Title page, I spread (portrait + prose), II opener + 2 alternating project spreads + index, III opener + to-scale timeline figure + 3 role spreads + two-column index, IV title-block on inverted cobalt, colophon. 14 flow acts, ~12.6vh desktop, no pins | Colophon on grid paper: CTA as running text (email, LinkedIn), the cat asleep on a baseline, small print | Pass 2: build-a-bridge (visitor picks a role, planks of real experience build, cat crosses). Pass 1 bespoke: pointer-watching cat + scroll-drawn to-scale timeline | Technical drawing on warm paper: Blueprint palette, crop-marked captioned figures, real photos only | 4500 |
 
-*(empty: your first build has nothing to clear, so build whatever the interview
-points at. From the second onwards, this table is the constraint.)*
 
 ---
 
@@ -41,7 +40,10 @@ reusing: a grammar, a nav treatment, a close pattern, a signature move, an
 act-count-and-length band. The shared columns are what the next build inherits
 as a constraint, so writing them down is the whole point.
 
-Nothing is taken yet.
+- **Chaptered editorial with a vertical margin folio** (shana-portfolio).
+- **A line-drawn mascot on the hero headline's baseline that watches the pointer** (shana-portfolio).
+- **A to-scale "roles held" timeline drawn by scroll** (shana-portfolio).
+- **Build-a-bridge as the signature move** (shana-portfolio, pass 2).
 
 ---
 

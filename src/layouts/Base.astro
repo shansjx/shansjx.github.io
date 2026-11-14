@@ -11,26 +11,46 @@ const { title, description = '' } = Astro.props;
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#F3F1EC" />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
+		<meta property="og:title" content={title} />
+		{description && <meta property="og:description" content={description} />}
+		<meta property="og:type" content="website" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500&display=swap"
+		/>
 
 		<!-- scroll-craft engine: never edited per project. Theme it with the tokens below. -->
 		<link rel="stylesheet" href="/scrollcraft/scrollcraft.css" />
 		<style is:global>
-			/* Placeholder theme. Six colours and two fonts; replace once the brief is written. */
+			/* Blueprint: warm paper, cobalt ink, one persimmon accent. */
 			:root {
-				--sc-canvas: #0b0c0e;
-				--sc-surface: #15171a;
-				--sc-ink: #eeeae4;
-				--sc-ink-soft: #a29d95;
-				--sc-accent: #e8623a;
-				--sc-accent-ink: #120d0b;
-				--sc-font-display: system-ui, sans-serif;
-				--sc-font-text: system-ui, sans-serif;
+				--sc-canvas: #f3f1ec;
+				--sc-surface: #e9e6df;
+				--sc-ink: #1f2a55;
+				--sc-ink-soft: #545c7d;
+				--sc-accent: #e0704a;
+				--sc-accent-ink: #1f2a55;
+				--sc-font-display: 'Bricolage Grotesque', 'Geist', system-ui, sans-serif;
+				--sc-font-text: 'Geist', system-ui, sans-serif;
+				--sc-font-mono: 'Geist Mono', ui-monospace, monospace;
+				--sc-shadow-color: 228 30% 25%;
+
+				/* The accent as text on paper. Same hue, darker, so it clears 4.5:1. */
+				--accent-text: #a3431f;
+				--accent-graphic: #c95a33;
+				--paper: #f3f1ec;
+				--paper-2: #e9e6df;
+				--cobalt: #1f2a55;
 			}
 		</style>
 	</head>

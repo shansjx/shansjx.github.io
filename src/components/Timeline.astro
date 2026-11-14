@@ -1,0 +1,51 @@
+---
+// "Roles held, to scale." Built from portfolio.timeline. Bars are positioned in
+// percent of the whole range, so the figure is exact at every width. Each bar
+// draws itself with --sc-p of the enclosing flow act (see page CSS).
+import { timeline } from '../data/portfolio';
+
+const m = (s: string) => {
+	const [y, mo] = s.split('-').map(Number);
+	return y * 12 + (mo - 1);
+};
+const start = m(timeline.from);
+const end = m(timeline.to);
+const span = end - start;
+const pct = (s: string) => ((m(s) - start) / span) * 100;
+
+const years: number[] = [];
+for (let y = Math.ceil(start / 12); y * 12 <= end; y++) years.push(y);
+const nowPct = pct(timeline.now);
+---
+
+<div class="tl" role="img" aria-label="A timeline from 2019 to 2027. Study: NYP diploma 2020 to 2023, SUTD degree 2023 to 2027 with an exchange in early 2026. Work: part-time roles 2019 to 2022, Pico Art 2023, Zing 2024, BCA late 2025, NUS City Syntax Lab from May 2026 to now.">
+	<div class="tl__axis" aria-hidden="true">
+		{years.map((y) => <span class="tl__year" style={`left:${((y * 12 - start) / span) * 100}%`}>{y}</span>)}
+		<span class="tl__now" style={`left:${nowPct}%`}>now</span>
+	</div>
+	{
+		timeline.rows.map((row, i) => (
+			<div class={`tl__row tl__row--${row.kind}`} style={`--i:${i}`} aria-hidden="true">
+				<span class="tl__label">{row.label}</span>
+				<span class="tl__track">
+					{years.map((y) => (
+						<span class="tl__grid" style={`left:${((y * 12 - start) / span) * 100}%`} />
+					))}
+					<span class="tl__nowline" style={`left:${nowPct}%`} />
+					{row.spans.map((s: any) => {
+						const l = pct(s.from);
+						const r = s.to ? pct(s.to) : nowPct;
+						return (
+							<span
+								class:list={['tl__bar', { 'tl__bar--accent': s.accent, 'tl__bar--open': !s.to }]}
+								style={`left:${l}%;width:${Math.max(r - l, 0.9)}%`}
+							>
+								{s.label && <span class="tl__barlabel">{s.label}</span>}
+							</span>
+						);
+					})}
+				</span>
+			</div>
+		))
+	}
+</div>

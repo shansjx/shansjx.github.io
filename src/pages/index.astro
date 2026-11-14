@@ -1,14 +1,1554 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import Base from '../layouts/Base.astro';
+import Cat from '../components/Cat.astro';
+import CatAsleep from '../components/CatAsleep.astro';
+import Timeline from '../components/Timeline.astro';
+import {
+	person,
+	about,
+	education,
+	featuredProjects,
+	earlierProjects,
+	roles,
+	earlierRoles,
+	elsewhere,
+	toolkit,
+} from '../data/portfolio';
+
+// Links whichever PDF in public/ has "resume" in its name (newest first), so a new
+// version can be dropped in under any filename. No file, no link: never a 404.
+// Resolved from the project root: during a build this module runs from dist/.
+const publicDir = path.resolve('public');
+const resumeFile = fs
+	.readdirSync(publicDir)
+	.filter((f) => /resume.*\.pdf$/i.test(f))
+	.sort((a, b) => fs.statSync(path.join(publicDir, b)).mtimeMs - fs.statSync(path.join(publicDir, a)).mtimeMs)[0];
+const resumeHref = resumeFile ? `/${encodeURI(resumeFile)}` : null;
+
+// "{count:2290}" in a lede becomes a number that counts up as it scrolls in.
+const withCounts = (s: string) =>
+	s.split(/(\{count:\d+\})/).map((p) => {
+		const m = p.match(/\{count:(\d+)\}/);
+		return m ? { n: Number(m[1]).toLocaleString('en-US') } : { t: p };
+	});
+
+// Figure numbers run through the page in order, like a printed feature.
+let figNo = 0;
+const fig = () => ++figNo;
+
+const chapters = [
+	{ id: 'hello', num: 'I', title: 'Hello' },
+	{ id: 'projects', num: 'II', title: 'Projects' },
+	{ id: 'work', num: 'III', title: 'Work' },
+	{ id: 'toolkit', num: 'IV', title: 'Toolkit' },
+];
 ---
 
-<Base title="shansjx" description="Personal site, under construction.">
+<Base
+	title="Shana Soh"
+	description="Shana Soh: final-year Computer Science & Design student at SUTD, graduating June 2027. Projects, work, and the things in between."
+>
+	<a class="skip" href="#hello">Skip to content</a>
+
+	<aside class="folio" aria-hidden="true" data-ground="paper">
+		<span class="folio__num"></span>
+		<span class="folio__title"></span>
+	</aside>
+
 	<main>
-		<section data-sc-act="flow" style="min-height: 100vh; display: grid; place-items: center; padding: 1rem;">
-			<div data-sc-in>
-				<h1>shansjx</h1>
-				<p>Under construction.</p>
-			</div>
-		</section>
+		<!-- TITLE PAGE ------------------------------------------------------ -->
+		<header class="chapter ground-paper grid-paper title-page" data-chapter="" data-title="" data-ground="paper">
+			<section data-sc-act="flow" class="title-page__inner sc-wrap">
+				<p class="title-page__meta">{person.meta}</p>
+				<h1 class="name">
+					<span class="name__text">{person.name}</span><Cat class="name__cat" />
+				</h1>
+				<div class="title-page__foot" data-sc-in data-sc-stagger="70">
+					<p class="title-page__line">{person.line}</p>
+					<nav class="contents" aria-label="Contents">
+						<ol>
+							{
+								chapters.map((c) => (
+									<li>
+										<a href={`#${c.id}`}>
+											<span class="contents__num">{c.num}</span>
+											{c.title}
+										</a>
+									</li>
+								))
+							}
+							<li class="contents__cta">
+								<a href="#say-hello">Say hello</a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+			</section>
+		</header>
+
+		<!-- I · HELLO ------------------------------------------------------- -->
+		<div class="chapter ground-paper2" id="hello" data-chapter="I" data-title="Hello" data-ground="paper2">
+			<section data-sc-act="flow" class="sc-wrap spread spread--hello">
+				<figure class="fig fig--portrait" data-sc-reveal="up" data-sc-reveal-at="0.02 0.3">
+					<div class="fig__frame">
+						<img
+							data-sc-parallax="-0.05"
+							src="/img/portrait.webp"
+							width="911"
+							height="1066"
+							alt="Shana smiling in a long black coat on a cobbled street."
+							decoding="async"
+						/>
+					</div>
+					<figcaption><span class="fig__no">Fig. {fig()}</span> The author.</figcaption>
+				</figure>
+				<div class="hello__text">
+					<h2 class="chapter-title" data-sc-in>
+						<span class="chapter-title__num">I</span>Hello.
+					</h2>
+					<div class="prose" data-sc-in data-sc-stagger="60">
+						<p class="sc-lede">{about[0]}</p>
+						{about.slice(1).map((p) => <p>{p}</p>)}
+					</div>
+					<dl class="edu" data-sc-in data-sc-stagger="50">
+						{
+							education.map((e) => (
+								<div class="edu__row">
+									<dt>
+										<span class="edu__school">{e.school}</span>
+										<span class="edu__what">{e.what}</span>
+									</dt>
+									<dd>
+										<span class="edu__when">{e.when}</span>
+										<span class="edu__note">{e.note}</span>
+									</dd>
+								</div>
+							))
+						}
+					</dl>
+				</div>
+			</section>
+		</div>
+
+		<!-- II · PROJECTS --------------------------------------------------- -->
+		<div class="chapter ground-paper" id="projects" data-chapter="II" data-title="Projects" data-ground="paper">
+			<section data-sc-act="flow" class="sc-wrap opener">
+				<h2 class="chapter-title chapter-title--xl" data-sc-in>
+					<span class="chapter-title__num">II</span>Things I've made.
+				</h2>
+			</section>
+
+			{
+				featuredProjects.map((p, i) => (
+					<section data-sc-act="flow" class:list={['sc-wrap', 'spread', 'project', i % 2 ? 'project--b' : 'project--a']}>
+						<div class="project__figs">
+							{p.figures.map((f, j) => (
+								<figure
+									class:list={['fig', `fig--${j}`]}
+									data-sc-reveal={j ? 'left' : 'up'}
+									data-sc-reveal-at={j ? '0.12 0.4' : '0.04 0.32'}
+								>
+									<div class="fig__frame">
+										<img src={f.src} width={f.w} height={f.h} alt={f.alt} loading="lazy" decoding="async" />
+									</div>
+									<figcaption>
+										<span class="fig__no">Fig. {fig()}</span> {f.caption}
+									</figcaption>
+								</figure>
+							))}
+						</div>
+						<div class="project__text" data-sc-in data-sc-stagger="60">
+							<h3 class="entry-title">{p.name}</h3>
+							<p class="entry-meta">
+								<span>{p.when}</span>
+								<span>{p.context}</span>
+								{p.team && <span>{p.team}</span>}
+							</p>
+							<p class="sc-lede">{p.summary}</p>
+							<p class="entry-body">{p.role}</p>
+							<ul class="tools" aria-label="Tools">
+								{p.tools.map((t) => (
+									<li>{t}</li>
+								))}
+							</ul>
+							{p.links?.map((l) => (
+								<a class="ref" href={l.href} rel="noopener" target="_blank">
+									{l.label}
+								</a>
+							))}
+						</div>
+					</section>
+				))
+			}
+
+			<section data-sc-act="flow" class="sc-wrap backlog">
+				<h3 class="backlog__title" data-sc-in>Earlier, and smaller</h3>
+				<ol class="index" data-sc-in data-sc-stagger="40">
+					{
+						earlierProjects.map((it) => (
+							<li class="index__row">
+								<span class="index__when">{it.when}</span>
+								<span class="index__name">
+									{it.name}
+									<span class="index__context">{it.context}</span>
+								</span>
+								<span class="index__line">
+									{it.line}
+									{it.tools && <span class="index__tools">{it.tools}</span>}
+								</span>
+								<span class="index__link">
+									{it.link && (
+										<a class="ref" href={it.link.href} rel="noopener" target="_blank">
+											{it.link.label}
+										</a>
+									)}
+								</span>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+		</div>
+
+		<!-- III · WORK ------------------------------------------------------ -->
+		<div class="chapter ground-paper2" id="work" data-chapter="III" data-title="Work" data-ground="paper2">
+			<section data-sc-act="flow" class="sc-wrap opener opener--work">
+				<h2 class="chapter-title chapter-title--xl" data-sc-in>
+					<span class="chapter-title__num">III</span>Where I've worked.
+				</h2>
+			</section>
+
+			<section data-sc-act="flow" class="sc-wrap timeline-fig">
+				<figure class="fig fig--timeline">
+					<Timeline />
+					<figcaption>
+						<span class="fig__no">Fig. {fig()}</span> Roles held, to scale. Business first, then computing, and the work in between.
+					</figcaption>
+				</figure>
+			</section>
+
+			{
+				roles.map((r, i) => (
+					<section data-sc-act="flow" class:list={['sc-wrap', 'spread', 'role', `role--${i}`]}>
+						<header class="role__head" data-sc-in>
+							<h3 class="entry-title">{r.org}</h3>
+							<p class="role__title">{r.title}</p>
+							<p class="entry-meta">
+								<span>{r.when}</span>
+								{r.unit && <span>{r.unit}</span>}
+							</p>
+						</header>
+						<div class="role__body">
+							<p class="sc-lede role__lede" data-sc-in>
+								{withCounts(r.lede).map((part) =>
+									part.n ? (
+										<span class="num" data-sc-count={`0 ${part.n}`} data-sc-count-at="0 0.09">
+											{part.n}
+										</span>
+									) : (
+										part.t
+									),
+								)}
+							</p>
+							<ul class="points" data-sc-in data-sc-stagger="50">
+								{r.points.map((pt) => (
+									<li>{pt}</li>
+								))}
+							</ul>
+							{r.links?.map((l) => (
+								<a class="ref" href={l.href} rel="noopener" target="_blank">
+									{l.label}
+								</a>
+							))}
+						</div>
+						{r.figures && (
+							<div class="role__figs">
+								{r.figures.map((f, j) => (
+									<figure
+										class:list={['fig', `fig--${j}`]}
+										data-sc-reveal={j ? 'left' : 'up'}
+										data-sc-reveal-at={j ? '0.2 0.48' : '0.1 0.4'}
+									>
+										<div class="fig__frame">
+											<img src={f.src} width={f.w} height={f.h} alt={f.alt} loading="lazy" decoding="async" />
+										</div>
+										<figcaption>
+											<span class="fig__no">Fig. {fig()}</span> {f.caption}
+										</figcaption>
+									</figure>
+								))}
+							</div>
+						)}
+					</section>
+				))
+			}
+
+			<section data-sc-act="flow" class="sc-wrap backlog backlog--two">
+				<div>
+					<h3 class="backlog__title" data-sc-in>Earlier roles</h3>
+					<ol class="index index--compact" data-sc-in data-sc-stagger="40">
+						{
+							earlierRoles.map((it) => (
+								<li class="index__row">
+									<span class="index__when">{it.when}</span>
+									<span class="index__name">
+										{it.name}
+										<span class="index__context">{it.context}</span>
+									</span>
+									<span class="index__line">{it.line}</span>
+								</li>
+							))
+						}
+					</ol>
+				</div>
+				<div>
+					<h3 class="backlog__title" data-sc-in>Elsewhere</h3>
+					<ol class="index index--compact" data-sc-in data-sc-stagger="40">
+						{
+							elsewhere.map((it) => (
+								<li class="index__row">
+									<span class="index__when">{it.when}</span>
+									<span class="index__name">
+										{it.name}
+										<span class="index__context">{it.context}</span>
+									</span>
+									<span class="index__line">
+										{it.line}
+										{it.link && (
+											<a class="ref ref--inline" href={it.link.href} rel="noopener" target="_blank">
+												{it.link.label}
+											</a>
+										)}
+									</span>
+								</li>
+							))
+						}
+					</ol>
+				</div>
+			</section>
+		</div>
+
+		<!-- IV · TOOLKIT ---------------------------------------------------- -->
+		<div class="chapter ground-cobalt" id="toolkit" data-chapter="IV" data-title="Toolkit" data-ground="cobalt">
+			<section data-sc-act="flow" class="sc-wrap toolkit">
+				<h2 class="chapter-title" data-sc-in>
+					<span class="chapter-title__num">IV</span>Toolkit.
+				</h2>
+				<dl class="titleblock" data-sc-in data-sc-stagger="50">
+					{
+						toolkit.map((g) => (
+							<div class="titleblock__row">
+								<dt>{g.group}</dt>
+								<dd>
+									<ul>
+										{g.items.map((t) => (
+											<li>{t}</li>
+										))}
+									</ul>
+								</dd>
+							</div>
+						))
+					}
+				</dl>
+			</section>
+		</div>
+
+		<!-- Pass 2: the pause ("So, what are you hiring for?") and the bridge go here. -->
+
+		<!-- SAY HELLO · colophon ------------------------------------------ -->
+		<footer class="chapter ground-paper grid-paper colophon" id="say-hello" data-chapter="" data-title="Say hello" data-ground="paper">
+			<section data-sc-act="flow" class="sc-wrap colophon__inner">
+				<h2 class="chapter-title chapter-title--xl" data-sc-in>Say hello.</h2>
+				<p class="colophon__text sc-lede" data-sc-in>
+					If you are hiring for a role that sits between people, design and code, I would like to hear about it. Write to
+					me at <a href={`mailto:${person.email}`}>{person.email}</a>, or find me on <a
+						href={person.linkedin}
+						rel="noopener"
+						target="_blank">LinkedIn</a
+					>.{resumeHref && <> My <a href={resumeHref}>resume</a> is here too.</>}
+				</p>
+				<CatAsleep class="colophon__cat" />
+				<p class="colophon__print">
+					{person.fullName}. Set in Bricolage Grotesque, Geist and Geist Mono. Built with Astro, 2026.
+				</p>
+			</section>
+		</footer>
 	</main>
 </Base>
+
+<style is:global>
+	/* ---------- grounds. Each chapter lands on its own, hard cut. ---------- */
+	.chapter {
+		position: relative;
+		color: var(--sc-ink);
+		scroll-margin-top: 0;
+	}
+	.ground-paper {
+		background: var(--paper);
+	}
+	.ground-paper2 {
+		background: var(--paper-2);
+	}
+	.ground-cobalt {
+		--sc-ink: #f3f1ec;
+		--sc-ink-soft: #b8bdd6;
+		--sc-hairline: color-mix(in oklab, #f3f1ec 16%, transparent);
+		--sc-hairline-strong: color-mix(in oklab, #f3f1ec 30%, transparent);
+		--accent-text: #f08a63;
+		background: var(--cobalt);
+		color: var(--sc-ink);
+	}
+	.grid-paper {
+		background-image:
+			linear-gradient(to right, color-mix(in oklab, var(--cobalt) 6%, transparent) 1px, transparent 1px),
+			linear-gradient(to bottom, color-mix(in oklab, var(--cobalt) 6%, transparent) 1px, transparent 1px);
+		background-size: 28px 28px;
+		background-position: -1px -1px;
+	}
+
+	a {
+		color: inherit;
+		text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+		text-underline-offset: 0.2em;
+		text-decoration-thickness: 1px;
+		transition: text-decoration-color 140ms var(--sc-ease-out), color 140ms var(--sc-ease-out);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		a:hover {
+			color: var(--accent-text);
+			text-decoration-color: currentColor;
+		}
+	}
+
+	/* never leave a focused link mid-fade */
+	[data-sc-in]:focus-within,
+	[data-sc-stagger] > :focus-within {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	.skip {
+		position: absolute;
+		left: var(--sc-gutter);
+		top: -4rem;
+		z-index: 100;
+		padding: 0.5rem 0.9rem;
+		background: var(--cobalt);
+		color: var(--paper);
+		border-radius: var(--sc-r-sm);
+	}
+	.skip:focus {
+		top: 1rem;
+	}
+
+	/* ---------- folio: chapter number and title in the margin ---------- */
+	.folio {
+		position: fixed;
+		z-index: var(--sc-z-chrome);
+		left: clamp(0.5rem, 1.6vw, 1.6rem);
+		top: 50%;
+		display: flex;
+		gap: 0.9rem;
+		align-items: center;
+		writing-mode: vertical-rl;
+		transform: translateY(-50%) rotate(180deg);
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		letter-spacing: var(--sc-track-wide);
+		text-transform: uppercase;
+		color: #545c7d;
+		opacity: 0;
+		transition: opacity 240ms var(--sc-ease-out), color 160ms var(--sc-ease-out);
+		pointer-events: none;
+	}
+	.folio.is-on {
+		opacity: 1;
+	}
+	.folio[data-ground='cobalt'] {
+		color: #b8bdd6;
+	}
+	.folio__num {
+		color: var(--accent-text);
+		font-weight: 500;
+	}
+	.folio[data-ground='cobalt'] .folio__num {
+		color: #f08a63;
+	}
+	.folio::after {
+		content: '';
+		width: 1px;
+		height: 3.5rem;
+		background: currentColor;
+		opacity: 0.4;
+		order: -1;
+	}
+	@media (max-width: 860px) {
+		.folio {
+			writing-mode: horizontal-tb;
+			transform: none;
+			top: auto;
+			bottom: max(0.75rem, env(safe-area-inset-bottom));
+			left: auto;
+			right: 0.75rem;
+			gap: 0.5rem;
+			padding: 0.35rem 0.6rem;
+			border-radius: var(--sc-r-sm);
+			background: color-mix(in oklab, var(--paper) 88%, transparent);
+			backdrop-filter: blur(6px);
+			box-shadow: var(--sc-e1);
+		}
+		.folio[data-ground='cobalt'] {
+			background: color-mix(in oklab, var(--cobalt) 88%, transparent);
+		}
+		.folio::after {
+			display: none;
+		}
+	}
+
+	/* ---------- shared type ---------- */
+	.chapter-title {
+		font-family: var(--sc-font-display);
+		font-weight: 600;
+		font-size: var(--sc-t-3xl);
+		line-height: var(--sc-leading-tight);
+		letter-spacing: var(--sc-track-tight);
+		text-wrap: balance;
+		margin: 0;
+		display: flex;
+		align-items: baseline;
+		gap: clamp(0.75rem, 1.6vw, 1.5rem);
+	}
+	.chapter-title--xl {
+		font-size: var(--sc-t-4xl);
+		line-height: var(--sc-leading-none);
+	}
+	.chapter-title__num {
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+		font-weight: 500;
+		letter-spacing: var(--sc-track-wide);
+		color: var(--accent-text);
+		transform: translateY(-0.35em);
+		flex: none;
+	}
+	.entry-title {
+		font-family: var(--sc-font-display);
+		font-weight: 600;
+		font-size: var(--sc-t-2xl);
+		line-height: var(--sc-leading-tight);
+		letter-spacing: var(--sc-track-snug);
+		margin: 0;
+		text-wrap: balance;
+	}
+	.entry-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.15rem 0;
+		margin: var(--sc-3) 0 0;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		letter-spacing: 0.04em;
+		color: var(--sc-ink-soft);
+	}
+	.entry-meta span:not(:last-child)::after {
+		content: '/';
+		margin: 0 0.6em;
+		opacity: 0.5;
+	}
+	.entry-body,
+	.prose p:not(.sc-lede) {
+		color: var(--sc-ink-soft);
+		max-width: var(--sc-measure);
+		text-wrap: pretty;
+	}
+	.entry-body,
+	.prose p {
+		margin: 0;
+	}
+	.prose p + p {
+		margin-top: var(--sc-4);
+	}
+	.sc-lede {
+		font-family: var(--sc-font-text);
+		font-weight: 450;
+		color: var(--sc-ink);
+		margin: 0;
+	}
+	.ref {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45em;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+		color: var(--accent-text);
+		text-decoration: none;
+		padding-block: 0.4rem;
+	}
+	.ref::after {
+		content: '';
+		width: 0.55em;
+		height: 0.55em;
+		border-top: 1.5px solid currentColor;
+		border-right: 1.5px solid currentColor;
+		transition: transform 140ms var(--sc-ease-out);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.ref:hover::after {
+			transform: translate(2px, -2px);
+		}
+	}
+	.ref--inline {
+		margin-left: 0.6em;
+		padding-block: 0;
+		font-size: var(--sc-t-xs);
+	}
+	.tools {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.tools li {
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		padding: 0.2rem 0.55rem;
+		border: 1px solid var(--sc-hairline-strong);
+		border-radius: var(--sc-r-sm);
+		color: var(--sc-ink-soft);
+	}
+
+	/* ---------- figures: captioned, crop-marked, in their own column ---------- */
+	.fig {
+		margin: 0;
+		position: relative;
+	}
+	.fig__frame {
+		position: relative;
+		overflow: hidden;
+		border-radius: var(--sc-r-sm);
+		background: var(--paper-2);
+		box-shadow: var(--sc-e2), var(--sc-edge);
+	}
+	.fig img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	.fig figcaption {
+		margin-top: var(--sc-3);
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		letter-spacing: 0.02em;
+		color: var(--sc-ink-soft);
+		max-width: 46ch;
+	}
+	.fig__no {
+		color: var(--accent-text);
+		margin-right: 0.4em;
+	}
+	/* crop marks: the technical-drawing touch */
+	.fig:not(.fig--timeline)::before,
+	.fig:not(.fig--timeline)::after {
+		content: '';
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		border-color: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+		border-style: solid;
+		pointer-events: none;
+	}
+	.fig:not(.fig--timeline)::before {
+		top: -9px;
+		left: -9px;
+		border-width: 1px 0 0 1px;
+	}
+	.fig:not(.fig--timeline)::after {
+		right: -9px;
+		top: -9px;
+		border-width: 1px 1px 0 0;
+	}
+
+	/* ---------- title page ---------- */
+	.title-page__inner {
+		min-height: 100svh;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		padding-top: clamp(1.5rem, 5vh, 3rem);
+		padding-bottom: clamp(2rem, 7vh, 4.5rem);
+	}
+	.name {
+		margin: 0;
+		align-self: end;
+		display: flex;
+		align-items: flex-end;
+		flex-wrap: wrap;
+		font-family: var(--sc-font-display);
+		font-weight: 650;
+		font-size: clamp(4rem, 2rem + 9vw, 10.5rem);
+		line-height: 0.86;
+		letter-spacing: -0.045em;
+		font-variation-settings: 'opsz' 96;
+	}
+	.name__text {
+		display: block;
+	}
+	.name__cat {
+		width: 0.72em;
+		height: 0.72em;
+		margin-left: 0.04em;
+		margin-bottom: 0.03em;
+		flex: none;
+	}
+	.title-page__foot {
+		margin-top: clamp(1.75rem, 5vh, 3.5rem);
+		padding-top: var(--sc-5);
+		border-top: 1px solid var(--sc-hairline-strong);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: var(--sc-5) var(--sc-7);
+		align-items: start;
+	}
+	.title-page__line {
+		margin: 0;
+		font-size: var(--sc-t-xl);
+		line-height: 1.2;
+		letter-spacing: var(--sc-track-snug);
+		font-weight: 500;
+		text-wrap: balance;
+		max-width: 22ch;
+	}
+	.title-page__meta {
+		margin: 0;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+		color: var(--sc-ink-soft);
+		letter-spacing: 0.02em;
+	}
+	.contents ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+	}
+	.contents li + li {
+		margin-top: 0.15rem;
+	}
+	.contents a {
+		display: inline-flex;
+		gap: 0.75rem;
+		padding-block: 0.25rem;
+		text-decoration: none;
+	}
+	.contents__num {
+		width: 2.2ch;
+		color: var(--sc-ink-soft);
+	}
+	.contents__cta a {
+		margin-top: 0.4rem;
+		padding-left: calc(2.2ch + 0.75rem);
+		color: var(--accent-text);
+		text-decoration: underline;
+		text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+	}
+
+	/* the cat */
+	.cat {
+		overflow: visible;
+	}
+	.cat path,
+	.cat circle {
+		fill: none;
+		stroke: var(--cobalt);
+		stroke-width: 2.4;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
+	}
+	.name .cat path,
+	.name .cat circle {
+		stroke-width: 3;
+	}
+	.cat .cat__head,
+	.cat .cat__body {
+		fill: var(--paper);
+	}
+	.cat .cat__eye-white {
+		fill: var(--paper);
+		stroke-width: 1.6;
+	}
+	.cat .cat__pupil {
+		fill: var(--cobalt);
+		stroke: none;
+	}
+	.cat .cat__nose {
+		fill: var(--sc-accent);
+		stroke: none;
+	}
+	.cat .cat__blush {
+		fill: var(--sc-accent);
+		stroke: none;
+		opacity: 0.32;
+	}
+	.cat .cat__whiskers,
+	.cat .cat__inner-ear {
+		stroke-width: 1.4 !important;
+		opacity: 0.7;
+	}
+	.cat__tail {
+		transform-box: view-box;
+		transform-origin: 71px 104px;
+	}
+	.cat__eyes {
+		transform-box: view-box;
+		transform-origin: 50px 46.5px;
+	}
+	.cat__pupil {
+		transition: transform 90ms linear;
+	}
+	.cat--asleep .cat__ground {
+		stroke-width: 1.2;
+		opacity: 0.5;
+	}
+	.cat__z {
+		font-family: var(--sc-font-mono);
+		font-size: 11px;
+		fill: var(--sc-ink-soft);
+	}
+	.cat__z--2 {
+		font-size: 8px;
+	}
+	.cat__breath {
+		transform-box: view-box;
+		transform-origin: 80px 79px;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.cat__tail {
+			animation: tail 4.8s var(--sc-ease-in-out) infinite;
+		}
+		.cat__eyes {
+			animation: blink 6s infinite;
+		}
+		.cat__breath {
+			animation: breathe 4.2s ease-in-out infinite;
+		}
+		.cat__z {
+			animation: z 4.2s ease-in-out infinite;
+		}
+		.cat__z--2 {
+			animation-delay: 0.7s;
+		}
+	}
+	@keyframes tail {
+		0%,
+		100% {
+			transform: rotate(0deg);
+		}
+		50% {
+			transform: rotate(-9deg);
+		}
+	}
+	@keyframes blink {
+		0%,
+		95%,
+		100% {
+			transform: scaleY(1);
+		}
+		97% {
+			transform: scaleY(0.1);
+		}
+	}
+	@keyframes breathe {
+		0%,
+		100% {
+			transform: scale(1, 1);
+		}
+		50% {
+			transform: scale(1.012, 1.04);
+		}
+	}
+	@keyframes z {
+		0%,
+		100% {
+			opacity: 0.25;
+			transform: translateY(0);
+		}
+		50% {
+			opacity: 0.9;
+			transform: translateY(-3px);
+		}
+	}
+
+	/* ---------- spreads ---------- */
+	.spread {
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		column-gap: clamp(1rem, 2.4vw, 2.5rem);
+		padding-block: var(--sc-section);
+	}
+
+	.spread--hello {
+		align-items: start;
+	}
+	.fig--portrait {
+		grid-column: 1 / span 5;
+		grid-row: 1;
+		margin-top: var(--sc-8);
+	}
+	.fig--portrait .fig__frame {
+		aspect-ratio: 911 / 1066;
+	}
+	.fig--portrait img {
+		height: 112%;
+		object-fit: cover;
+		margin-top: -6%;
+	}
+	.hello__text {
+		grid-column: 7 / span 6;
+		grid-row: 1;
+	}
+	.hello__text .prose {
+		margin-top: var(--sc-6);
+	}
+	.prose > * + * {
+		margin-top: var(--sc-4);
+	}
+	.edu {
+		margin: var(--sc-8) 0 0;
+		border-top: 1px solid var(--sc-hairline-strong);
+	}
+	.edu__row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: var(--sc-2) var(--sc-5);
+		padding-block: var(--sc-4);
+		border-bottom: 1px solid var(--sc-hairline);
+	}
+	.edu dt,
+	.edu dd {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+	}
+	.edu dd {
+		text-align: right;
+	}
+	.edu__school {
+		font-weight: 550;
+	}
+	.edu__what {
+		color: var(--sc-ink-soft);
+		font-size: var(--sc-t-sm);
+	}
+	.edu__when,
+	.edu__note {
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		color: var(--sc-ink-soft);
+	}
+	.edu__note {
+		color: var(--sc-ink);
+		font-weight: 500;
+	}
+
+	/* chapter openers: a full stop before the spreads */
+	.opener {
+		padding-top: var(--sc-section);
+		padding-bottom: 0;
+	}
+	.opener .chapter-title {
+		max-width: 14ch;
+	}
+
+	/* projects */
+	.project {
+		align-items: center;
+		row-gap: var(--sc-6);
+		padding-block: var(--sc-8);
+	}
+	.project__text > * + * {
+		margin-top: var(--sc-4);
+	}
+	.project__text .entry-meta {
+		margin-top: var(--sc-3);
+	}
+	.project__text .sc-lede {
+		margin-top: var(--sc-5);
+	}
+	.project__text .tools {
+		margin-top: var(--sc-5);
+	}
+	.project--a .project__figs {
+		grid-column: 1 / span 5;
+	}
+	.project--a .project__text {
+		grid-column: 7 / span 6;
+	}
+	.project--b .project__text {
+		grid-column: 1 / span 5;
+		grid-row: 1;
+	}
+	.project--b .project__figs {
+		grid-column: 7 / span 6;
+		grid-row: 1;
+		position: relative;
+		padding-bottom: var(--sc-8);
+	}
+	.project--a .fig--0 .fig__frame {
+		max-height: 78vh;
+		aspect-ratio: 3 / 4;
+	}
+	.project--a .fig--0 img {
+		height: 100%;
+		object-fit: cover;
+	}
+	.project--b .fig--0 {
+		width: 54%;
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	.project--b .fig--0 .fig__frame {
+		transform: rotate(-1.5deg);
+	}
+	.project--b .fig--0 figcaption {
+		margin: 0 0 var(--sc-3);
+	}
+	.project--b .fig--1 {
+		width: 80%;
+		margin-left: auto;
+		margin-top: -12%;
+	}
+
+	/* backlog index: everything else, compact */
+	.backlog {
+		padding-block: var(--sc-8) var(--sc-section);
+	}
+	.backlog__title {
+		margin: 0 0 var(--sc-4);
+		font-family: var(--sc-font-display);
+		font-weight: 600;
+		font-size: var(--sc-t-xl);
+		letter-spacing: var(--sc-track-snug);
+	}
+	.index {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--sc-hairline-strong);
+	}
+	.index__row {
+		display: grid;
+		grid-template-columns: 7ch minmax(0, 1.1fr) minmax(0, 2fr) 9rem;
+		gap: var(--sc-2) var(--sc-5);
+		padding-block: var(--sc-4);
+		border-bottom: 1px solid var(--sc-hairline);
+		align-items: baseline;
+	}
+	.index__when {
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		color: var(--sc-ink-soft);
+		font-variant-numeric: tabular-nums;
+	}
+	.index__name {
+		font-weight: 550;
+		display: flex;
+		flex-direction: column;
+	}
+	.index__context {
+		font-weight: 400;
+		font-size: var(--sc-t-sm);
+		color: var(--sc-ink-soft);
+	}
+	.index__line {
+		color: var(--sc-ink-soft);
+		font-size: var(--sc-t-sm);
+		text-wrap: pretty;
+	}
+	.index__tools {
+		display: block;
+		margin-top: 0.2rem;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		opacity: 0.85;
+	}
+	.index__link {
+		text-align: right;
+	}
+	.index__link .ref {
+		padding: 0;
+	}
+	.backlog--two {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: var(--sc-8) clamp(2rem, 5vw, 5rem);
+	}
+	.index--compact .index__row {
+		grid-template-columns: 9ch minmax(0, 1fr);
+	}
+	.index--compact .index__line {
+		grid-column: 2;
+	}
+
+	/* work */
+	.opener--work {
+		padding-bottom: var(--sc-6);
+	}
+	.timeline-fig {
+		padding-block: var(--sc-6) var(--sc-8);
+	}
+	.role {
+		row-gap: var(--sc-6);
+		padding-block: var(--sc-9);
+		background: linear-gradient(var(--sc-hairline-strong), var(--sc-hairline-strong)) no-repeat center top /
+			calc(100% - 2 * var(--sc-gutter)) 1px;
+	}
+	.role__head {
+		grid-column: 1 / span 4;
+		align-self: start;
+	}
+	.role__title {
+		margin: var(--sc-2) 0 0;
+		font-weight: 500;
+	}
+	.role__body {
+		grid-column: 6 / span 7;
+	}
+	.role__lede {
+		font-size: var(--sc-t-xl);
+		line-height: 1.25;
+		letter-spacing: var(--sc-track-snug);
+		text-wrap: balance;
+	}
+	.num {
+		font-variant-numeric: tabular-nums;
+		color: var(--accent-text);
+		font-weight: 600;
+	}
+	.points {
+		margin: var(--sc-6) 0 var(--sc-4);
+		padding: 0;
+		list-style: none;
+		max-width: var(--sc-measure);
+	}
+	.points li {
+		position: relative;
+		padding-left: 1.4rem;
+		color: var(--sc-ink-soft);
+		text-wrap: pretty;
+	}
+	.points li + li {
+		margin-top: var(--sc-3);
+	}
+	.points li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.8em;
+		width: 0.7rem;
+		height: 1px;
+		background: var(--sc-ink);
+		opacity: 0.6;
+	}
+	.role__figs {
+		grid-column: 6 / span 7;
+	}
+	/* BCA: two figures, the wide one leads, the small one tucks under it offset */
+	.role--1 .role__figs {
+		grid-column: 3 / span 10;
+		display: grid;
+		grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+		gap: var(--sc-6);
+		align-items: end;
+		margin-top: var(--sc-5);
+	}
+	.role--1 .fig--1 {
+		margin-bottom: var(--sc-8);
+	}
+	/* Zing: the portrait photo hangs in the left column under the header */
+	.role--2 .role__figs {
+		grid-column: 1 / span 4;
+		grid-row: 2;
+		margin-top: calc(-1 * var(--sc-4));
+	}
+	.role--2 .role__body {
+		grid-row: 1 / span 2;
+	}
+	.role--2 .fig .fig__frame {
+		aspect-ratio: 4 / 5;
+	}
+	.role--2 .fig img {
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 30%;
+	}
+
+	/* the to-scale figure */
+	.tl {
+		--label-w: 11rem;
+		position: relative;
+		padding-top: 1.6rem;
+	}
+	.tl__axis {
+		position: relative;
+		margin-left: var(--label-w);
+		height: 1.2rem;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		color: var(--sc-ink-soft);
+		font-variant-numeric: tabular-nums;
+	}
+	.tl__year {
+		position: absolute;
+		bottom: 0.2rem;
+		transform: translateX(-50%);
+	}
+	.tl__now {
+		position: absolute;
+		top: -1.5rem;
+		transform: translateX(-50%);
+		color: var(--accent-text);
+		font-weight: 500;
+	}
+	.tl__row {
+		display: grid;
+		grid-template-columns: var(--label-w) minmax(0, 1fr);
+		align-items: center;
+		min-height: 2.6rem;
+		border-top: 1px solid var(--sc-hairline);
+	}
+	.tl__row:last-child {
+		border-bottom: 1px solid var(--sc-hairline);
+	}
+	.tl__label {
+		font-size: var(--sc-t-sm);
+		font-weight: 500;
+		padding-right: var(--sc-4);
+	}
+	.tl__row--earlier .tl__label,
+	.tl__row--study .tl__label {
+		color: var(--sc-ink-soft);
+		font-weight: 400;
+	}
+	.tl__track {
+		position: relative;
+		height: 2.6rem;
+	}
+	.tl__grid,
+	.tl__nowline {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 1px;
+		background: var(--sc-hairline);
+	}
+	.tl__nowline {
+		background: var(--accent-graphic);
+	}
+	.tl__bar {
+		--draw: clamp(0, calc((var(--sc-p, 1) - 0.14 - var(--i, 0) * 0.035) * 5), 1);
+		position: absolute;
+		top: 50%;
+		height: 0.7rem;
+		margin-top: -0.35rem;
+		border-radius: 2px;
+		background: var(--cobalt);
+		transform-origin: left center;
+		transform: scaleX(var(--draw));
+	}
+	.tl__row--study .tl__bar {
+		background: transparent;
+		border: 1.5px solid var(--cobalt);
+		height: 1.25rem;
+		margin-top: -0.625rem;
+	}
+	.tl__row--study .tl__bar--accent {
+		background: var(--accent-graphic);
+		border-color: var(--accent-graphic);
+		height: 0.55rem;
+		margin-top: -0.275rem;
+		z-index: 1;
+	}
+	.tl__row--earlier .tl__bar {
+		background: color-mix(in oklab, var(--cobalt) 45%, transparent);
+	}
+	.tl__row--now .tl__bar {
+		background: var(--accent-graphic);
+	}
+	.tl__bar--open::after {
+		content: '';
+		position: absolute;
+		right: -0.45rem;
+		top: 50%;
+		width: 0.45rem;
+		height: 0.45rem;
+		margin-top: -0.225rem;
+		border-radius: 50%;
+		background: var(--accent-graphic);
+	}
+	.tl__barlabel {
+		position: absolute;
+		left: 0.5rem;
+		top: 50%;
+		transform: translateY(-50%);
+		font-family: var(--sc-font-mono);
+		font-size: 0.68rem;
+		white-space: nowrap;
+		color: var(--sc-ink);
+	}
+	.tl__bar--accent .tl__barlabel {
+		top: auto;
+		bottom: 0.9rem;
+		left: 50%;
+		transform: translateX(-50%);
+		color: var(--accent-text);
+	}
+	.fig--timeline figcaption {
+		margin-top: var(--sc-5);
+		margin-left: 11rem;
+		max-width: 64ch;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tl__bar {
+			transform: none;
+		}
+	}
+
+	/* toolkit: set as a drawing's title block */
+	.toolkit {
+		padding-block: var(--sc-section);
+	}
+	.titleblock {
+		margin: var(--sc-8) 0 0;
+		border: 1px solid var(--sc-hairline-strong);
+	}
+	.titleblock__row {
+		display: grid;
+		grid-template-columns: 13rem minmax(0, 1fr);
+	}
+	.titleblock__row + .titleblock__row {
+		border-top: 1px solid var(--sc-hairline);
+	}
+	.titleblock dt {
+		padding: var(--sc-4) var(--sc-5);
+		border-right: 1px solid var(--sc-hairline);
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		letter-spacing: var(--sc-track-wide);
+		text-transform: uppercase;
+		color: var(--sc-ink-soft);
+	}
+	.titleblock dd {
+		margin: 0;
+		padding: var(--sc-4) var(--sc-5);
+	}
+	.titleblock ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3rem 0;
+	}
+	.titleblock li:not(:last-child)::after {
+		content: '/';
+		margin: 0 0.7em;
+		color: var(--sc-ink-soft);
+		opacity: 0.6;
+	}
+
+	/* colophon */
+	.colophon__inner {
+		min-height: 88svh;
+		display: grid;
+		align-content: center;
+		padding-block: var(--sc-section) var(--sc-7);
+	}
+	.colophon__text {
+		margin-top: var(--sc-6);
+		max-width: 40ch;
+		font-size: var(--sc-t-xl);
+		line-height: 1.35;
+		letter-spacing: var(--sc-track-snug);
+	}
+	.colophon__text a {
+		color: var(--accent-text);
+		text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+	}
+	.colophon__cat {
+		width: min(15rem, 60vw);
+		margin-top: var(--sc-9);
+		justify-self: end;
+	}
+	.colophon__print {
+		margin: var(--sc-3) 0 0;
+		padding-top: var(--sc-4);
+		border-top: 1px solid var(--sc-hairline);
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		color: var(--sc-ink-soft);
+	}
+
+	/* ---------- phone composition ---------- */
+	@media (max-width: 860px) {
+		.title-page__foot {
+			grid-template-columns: 1fr;
+			gap: var(--sc-5);
+		}
+		.spread {
+			grid-template-columns: minmax(0, 1fr);
+			row-gap: var(--sc-6);
+		}
+		.spread > * {
+			grid-column: 1 / -1 !important;
+			grid-row: auto !important;
+		}
+		.fig--portrait {
+			margin-top: 0;
+			width: 82%;
+		}
+		.edu__row {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.edu dd {
+			text-align: left;
+		}
+		.chapter-title--xl {
+			font-size: var(--sc-t-3xl);
+		}
+		.chapter-title {
+			font-size: var(--sc-t-2xl);
+		}
+		.project--b .project__figs {
+			order: -1;
+			padding-bottom: 0;
+		}
+		.project--a .fig--0 .fig__frame {
+			max-height: 70svh;
+		}
+		.role--1 .role__figs {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.role--1 .fig--1 {
+			margin-bottom: 0;
+			width: 78%;
+			margin-left: auto;
+		}
+		.role--2 .role__figs {
+			margin-top: 0;
+			width: 78%;
+		}
+		.index__row {
+			grid-template-columns: 6ch minmax(0, 1fr);
+		}
+		.index__line,
+		.index__link {
+			grid-column: 2;
+			text-align: left;
+		}
+		.backlog--two {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.tl {
+			--label-w: 6.5rem;
+		}
+		.tl__label {
+			font-size: var(--sc-t-xs);
+			line-height: 1.2;
+		}
+		.tl__barlabel {
+			display: none;
+		}
+		.tl__year {
+			font-size: 0.62rem;
+		}
+		.fig--timeline figcaption {
+			margin-left: 0;
+		}
+		.titleblock__row {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.titleblock dt {
+			border-right: 0;
+			padding-bottom: 0;
+		}
+		.colophon__inner {
+			min-height: 80svh;
+		}
+		/* room for the folio chip */
+		.colophon__print {
+			padding-bottom: 3rem;
+		}
+	}
+	@media (max-width: 520px) {
+		.tl__year:nth-child(even) {
+			visibility: hidden;
+		}
+	}
+</style>
+
+<script>
+	// Folio: the chapter number and title in the margin, updated as chapters pass.
+	const folio = document.querySelector<HTMLElement>('.folio');
+	const num = folio?.querySelector('.folio__num');
+	const title = folio?.querySelector('.folio__title');
+	const chapters = document.querySelectorAll<HTMLElement>('[data-chapter]');
+	if (folio && num && title && 'IntersectionObserver' in window) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				for (const e of entries) {
+					if (!e.isIntersecting) continue;
+					const el = e.target as HTMLElement;
+					num.textContent = el.dataset.chapter || '';
+					title.textContent = el.dataset.title || '';
+					folio.dataset.ground = el.dataset.ground || 'paper';
+					folio.classList.toggle('is-on', !!el.dataset.title);
+				}
+			},
+			{ rootMargin: '-50% 0px -50% 0px' },
+		);
+		chapters.forEach((c) => io.observe(c));
+	}
+
+	// The cat watches your pointer. Fine pointers only, and never under reduced motion.
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const eyes = Array.from(document.querySelectorAll<SVGCircleElement>('[data-cat-eye]'));
+	if (!reduce && eyes.length) {
+		let px = 0;
+		let py = 0;
+		let queued = false;
+		const look = () => {
+			queued = false;
+			for (const eye of eyes) {
+				const svg = eye.ownerSVGElement;
+				if (!svg) continue;
+				const r = svg.getBoundingClientRect();
+				if (r.bottom < 0 || r.top > innerHeight) continue;
+				const vb = svg.viewBox.baseVal;
+				const ex = r.left + (eye.cx.baseVal.value / vb.width) * r.width;
+				const ey = r.top + (eye.cy.baseVal.value / vb.height) * r.height;
+				const dx = px - ex;
+				const dy = py - ey;
+				const d = Math.hypot(dx, dy) || 1;
+				const k = Math.min(d / 160, 1) * 1.8;
+				eye.setAttribute('transform', `translate(${((dx / d) * k).toFixed(2)} ${((dy / d) * k).toFixed(2)})`);
+			}
+		};
+		const onMove = (e: PointerEvent) => {
+			px = e.clientX;
+			py = e.clientY;
+			if (!queued) {
+				queued = true;
+				requestAnimationFrame(look);
+			}
+		};
+		addEventListener('pointermove', onMove, { passive: true });
+		addEventListener('pointerdown', onMove, { passive: true });
+	}
+</script>

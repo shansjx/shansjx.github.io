@@ -15,7 +15,13 @@ pnpm-debug.log*
 
 # environment variables
 .env
-.env.production
+.env.*
+!.env.example
+
+# private: this repo is public (see AGENTS.md). Planning notes and local settings stay local.
+scrollcraft/builds/
+.claude/settings.local.json
+*.local.json
 
 # macOS-specific files
 .DS_Store

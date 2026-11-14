@@ -1,0 +1,30 @@
+---
+// The sitting cat. Line-drawn, one stroke weight. Pupils follow the pointer
+// (page script finds [data-cat-eye]); tail and blink are CSS.
+interface Props {
+	class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<svg class:list={['cat', cls]} viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+	<g class="cat__tail">
+		<path d="M71 104 C88 106 99 96 96 84 C94 76 86 74 84 80" />
+	</g>
+	<path class="cat__body" d="M41 63 C31 72 27 88 29 106 Q50 110 71 106 C73 88 69 72 59 63" />
+	<path class="cat__feet" d="M37 106 q5 -6 10 0 M53 106 q5 -6 10 0" />
+	<path
+		class="cat__head"
+		d="M33 42 L30 18 L46 30 Q50 29 54 30 L70 18 L67 42 C71 51 68 61 60 64 Q50 68 40 64 C32 61 29 51 33 42 Z"
+	/>
+	<path class="cat__inner-ear" d="M34 25 L35 34 M66 25 L65 34" />
+	<g class="cat__eyes">
+		<circle class="cat__pupil" data-cat-eye cx="42" cy="46.5" r="3" />
+		<circle class="cat__pupil" data-cat-eye cx="58" cy="46.5" r="3" />
+	</g>
+	<path class="cat__nose" d="M48 53.5 h4 l-2 2.4 Z" />
+	<path class="cat__mouth" d="M50 56 q-2 2.6 -4.4 1 M50 56 q2 2.6 4.4 1" />
+	<path class="cat__whiskers" d="M37 54 h-11 M37 57.5 l-10 2.5 M63 54 h11 M63 57.5 l10 2.5" />
+	<circle class="cat__blush" cx="38" cy="58" r="2.4" />
+	<circle class="cat__blush" cx="62" cy="58" r="2.4" />
+</svg>

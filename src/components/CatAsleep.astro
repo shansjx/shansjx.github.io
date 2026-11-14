@@ -1,0 +1,25 @@
+---
+// The same cat, curled up on the colophon's baseline. Breathes slowly (CSS).
+interface Props {
+	class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<svg class:list={['cat', 'cat--asleep', cls]} viewBox="0 0 160 84" aria-hidden="true" focusable="false">
+	<g class="cat__breath">
+		<path class="cat__body" d="M44 78 C40 56 60 42 90 42 C120 42 140 56 138 78" />
+		<path class="cat__tail" d="M138 76 C144 82 126 84 98 80 C88 79 80 76 78 72" />
+		<path
+			class="cat__head"
+			d="M24 78 C18 70 18 60 24 54 L22 40 L34 49 Q42 47 50 49 L60 41 L59 55 C66 62 64 72 58 78 Z"
+		/>
+		<path class="cat__lid" d="M30 63 q4 3 8 0 M45 63 q4 3 8 0" />
+		<path class="cat__nose" d="M39.5 67.5 h3.4 l-1.7 2 Z" />
+		<circle class="cat__blush" cx="30" cy="69" r="2.4" />
+		<circle class="cat__blush" cx="52" cy="69" r="2.4" />
+	</g>
+	<text class="cat__z" x="64" y="34">z</text>
+	<text class="cat__z cat__z--2" x="74" y="22">z</text>
+	<path class="cat__ground" d="M4 79 H156" />
+</svg>
