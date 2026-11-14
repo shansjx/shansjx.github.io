@@ -18,7 +18,7 @@ for (let y = Math.ceil(start / 12); y * 12 <= end; y++) years.push(y);
 const nowPct = pct(timeline.now);
 ---
 
-<div class="tl" role="img" aria-label="A timeline from 2019 to 2027. Study: NYP diploma 2020 to 2023, SUTD degree 2023 to 2027 with an exchange in early 2026. Work: part-time roles 2019 to 2022, Pico Art 2023, Zing 2024, BCA late 2025, NUS City Syntax Lab from May 2026 to now.">
+<div class="tl" role="img" aria-label="A timeline from 2020 to 2027. Study: NYP diploma 2020 to 2023, SUTD degree 2023 to 2027 with an exchange in early 2026. Work: part-time roles 2020 to 2022, Pico Art 2023, Zing 2024, BCA late 2025, NUS City Syntax Lab from May 2026 to now.">
 	<div class="tl__axis" aria-hidden="true">
 		{years.map((y) => <span class="tl__year" style={`left:${((y * 12 - start) / span) * 100}%`}>{y}</span>)}
 		<span class="tl__now" style={`left:${nowPct}%`}>now</span>

@@ -55,9 +55,9 @@ export const person = {
 };
 
 export const about = [
-	'I started in business, with a diploma in Business & Financial Technology, then moved into Computer Science & Design at SUTD. That order stuck. I like knowing why a feature matters before I build it, and I like being the one who can explain it to everyone afterwards.',
-	'Right now I am a software and product engineering intern at NUS City Syntax Lab. I am the requirements contact for government agencies, researchers and testers on the Singapore Building Carbon Calculator, and I ship the code that comes out of those conversations.',
-	'Off the clock I draw. I run a small art shop, and a few of my merchandise designs have raised money for Kitten Sanctuary SG. Hence the cat.',
+	'I started my foundation with a diploma in Business & Financial Technology, then moved into Computer Science & Design at SUTD. I like knowing why a feature matters before I build it, and I like being the one who can explain it to everyone afterwards.',
+	'Right now I am a software and product engineering intern at NUS City Syntax Lab. I work closely with government agencies, researchers and testers on the Singapore Building Carbon Calculator, and I ship the code that comes out of those conversations.',
+	'As a hobby, I draw. I run a small art shop, and a few of my merchandise designs have raised money for Kitten Sanctuary SG and other non-profits. Hence, the cat theme! ',
 ];
 
 export const education = [
@@ -288,12 +288,6 @@ export const earlierRoles: IndexItem[] = [
 		context: 'Clerical, part-time',
 		line: 'Scanning, reviewing and filing customer documents.',
 	},
-	{
-		when: '2019',
-		name: 'Kalos Consultancy',
-		context: 'Personal assistant',
-		line: 'Liaised with outside developers to launch the company website.',
-	},
 ];
 
 export const elsewhere: IndexItem[] = [
@@ -341,7 +335,7 @@ export const toolkit = [
 	{ group: 'Frameworks', items: ['Next.js', 'React', 'Node.js', 'NestJS', 'Spring Boot', 'Tailwind CSS', 'Unity'] },
 	{
 		group: 'Cloud & data',
-		items: ['AWS (RDS, ECS, EC2)', 'Terraform', 'PostgreSQL', 'Supabase', 'TypeORM', 'REST APIs', 'Stripe API'],
+		items: ['AWS (RDS)', 'Terraform', 'PostgreSQL', 'Supabase', 'TypeORM', 'REST APIs', 'Stripe API'],
 	},
 	{
 		group: 'Product & people',
@@ -352,7 +346,7 @@ export const toolkit = [
 
 // The to-scale figure. Months are "YYYY-MM". Omit `to` for an ongoing row.
 export const timeline = {
-	from: '2019-12',
+	from: '2020-01',
 	to: '2027-06',
 	now: '2026-11',
 	rows: [
@@ -373,7 +367,6 @@ export const timeline = {
 			label: 'Earlier, part-time',
 			kind: 'earlier',
 			spans: [
-				{ from: '2019-12', to: '2020-05' },
 				{ from: '2020-09', to: '2020-10' },
 				{ from: '2022-05', to: '2022-09' },
 				{ from: '2022-10', to: '2022-11' },
