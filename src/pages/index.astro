@@ -52,6 +52,15 @@ const chapters = [
 >
 	<a class="skip" href="#hello">Skip to content</a>
 
+	<a class="to-top" href="#top" aria-label="Back to top" data-ground="paper">
+		<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+			<path class="to-top__datum" d="M5 4.5h14" />
+			<path class="to-top__arrow" d="M12 19.5V8M8.5 11.5 12 8l3.5 3.5" />
+			<path class="to-top__tick" d="M9.5 19.5h5" />
+		</svg>
+		<span class="to-top__label">Top</span>
+	</a>
+
 	<aside class="folio" aria-hidden="true" data-ground="paper">
 		<span class="folio__num"></span>
 		<span class="folio__title"></span>
@@ -59,7 +68,7 @@ const chapters = [
 
 	<main>
 		<!-- TITLE PAGE ------------------------------------------------------ -->
-		<header class="chapter ground-paper grid-paper title-page" data-chapter="" data-title="" data-ground="paper">
+		<header id="top" class="chapter ground-paper grid-paper title-page" data-chapter="" data-title="" data-ground="paper">
 			<section data-sc-act="flow" class="title-page__inner sc-wrap">
 				<p class="title-page__meta">{person.meta}</p>
 				<h1 class="name">
@@ -429,6 +438,102 @@ const chapters = [
 		transform: none !important;
 	}
 
+	/* ---------- back to top: a dimension arrow up to a datum line ---------- */
+	.to-top {
+		position: fixed;
+		z-index: var(--sc-z-chrome);
+		right: clamp(0.75rem, 2vw, 1.75rem);
+		bottom: max(clamp(0.75rem, 2vw, 1.75rem), env(safe-area-inset-bottom));
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		height: 2.75rem;
+		min-width: 2.75rem;
+		padding: 0 0.85rem 0 0.7rem;
+		border: 1px solid color-mix(in oklab, var(--cobalt) 35%, transparent);
+		border-radius: var(--sc-r-sm);
+		background: color-mix(in oklab, var(--paper) 92%, transparent);
+		backdrop-filter: blur(6px);
+		box-shadow: var(--sc-e1), var(--sc-edge);
+		color: var(--cobalt);
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-xs);
+		letter-spacing: var(--sc-track-wide);
+		text-transform: uppercase;
+		text-decoration: none;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(6px);
+		transition:
+			opacity 200ms var(--sc-ease-out),
+			transform 200ms var(--sc-ease-out),
+			visibility 0s linear 200ms,
+			background-color 160ms var(--sc-ease-out),
+			color 160ms var(--sc-ease-out);
+	}
+	.to-top.is-on {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		transition:
+			opacity 200ms var(--sc-ease-out),
+			transform 200ms var(--sc-ease-out),
+			visibility 0s,
+			background-color 160ms var(--sc-ease-out),
+			color 160ms var(--sc-ease-out);
+	}
+	.to-top svg {
+		width: 1.15rem;
+		height: 1.15rem;
+		flex: none;
+		overflow: visible;
+	}
+	.to-top path {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.to-top .to-top__datum {
+		stroke: var(--accent-graphic);
+		stroke-width: 1.8;
+	}
+	.to-top__arrow {
+		transition: transform 160ms var(--sc-ease-out);
+	}
+	.to-top[data-ground='cobalt'] {
+		background: color-mix(in oklab, var(--cobalt) 92%, transparent);
+		border-color: color-mix(in oklab, #f3f1ec 30%, transparent);
+		color: #f3f1ec;
+	}
+	.to-top[data-ground='cobalt'] .to-top__datum {
+		stroke: #f08a63;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.to-top:hover {
+			color: var(--accent-text);
+		}
+		.to-top[data-ground='cobalt']:hover {
+			color: #f08a63;
+		}
+		.to-top:hover .to-top__arrow {
+			transform: translateY(-2px);
+		}
+	}
+	.to-top:active {
+		transform: scale(0.97);
+	}
+	@media (max-width: 860px) {
+		.to-top {
+			padding: 0;
+			justify-content: center;
+		}
+		.to-top__label {
+			display: none;
+		}
+	}
+
 	.skip {
 		position: absolute;
 		left: var(--sc-gutter);
@@ -491,7 +596,7 @@ const chapters = [
 			top: auto;
 			bottom: max(0.75rem, env(safe-area-inset-bottom));
 			left: auto;
-			right: 0.75rem;
+			right: calc(0.75rem + 2.75rem + 0.5rem);
 			gap: 0.5rem;
 			padding: 0.35rem 0.6rem;
 			border-radius: var(--sc-r-sm);
@@ -1496,6 +1601,7 @@ const chapters = [
 <script>
 	// Folio: the chapter number and title in the margin, updated as chapters pass.
 	const folio = document.querySelector<HTMLElement>('.folio');
+	const toTop = document.querySelector<HTMLAnchorElement>('.to-top');
 	const num = folio?.querySelector('.folio__num');
 	const title = folio?.querySelector('.folio__title');
 	const chapters = document.querySelectorAll<HTMLElement>('[data-chapter]');
@@ -1509,11 +1615,26 @@ const chapters = [
 					title.textContent = el.dataset.title || '';
 					folio.dataset.ground = el.dataset.ground || 'paper';
 					folio.classList.toggle('is-on', !!el.dataset.title);
+					toTop?.classList.toggle('is-on', !!el.dataset.title);
 				}
 			},
 			{ rootMargin: '-50% 0px -50% 0px' },
 		);
 		chapters.forEach((c) => io.observe(c));
+
+		// The button sits at the bottom of the screen, so it takes its colours from the
+		// chapter under that band, not the one in the middle.
+		if (toTop) {
+			const under = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) {
+						if (e.isIntersecting) toTop.dataset.ground = (e.target as HTMLElement).dataset.ground || 'paper';
+					}
+				},
+				{ rootMargin: '-94% 0px -3% 0px' },
+			);
+			chapters.forEach((c) => under.observe(c));
+		}
 	}
 
 	// The cat watches your pointer. Fine pointers only, and never under reduced motion.
@@ -1551,4 +1672,18 @@ const chapters = [
 		addEventListener('pointermove', onMove, { passive: true });
 		addEventListener('pointerdown', onMove, { passive: true });
 	}
+
+	// Back to top: smooth unless reduced motion, then hand focus to the top of the page
+	// so keyboard users continue from there.
+	toTop?.addEventListener('click', (e) => {
+		e.preventDefault();
+		const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+		const top = document.getElementById('top');
+		if (top) {
+			top.setAttribute('tabindex', '-1');
+			top.focus({ preventScroll: true });
+		}
+		history.replaceState(null, '', location.pathname);
+	});
 </script>
