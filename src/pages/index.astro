@@ -39,7 +39,7 @@ let figNo = 0;
 const fig = () => ++figNo;
 
 const chapters = [
-	{ id: 'hello', num: 'I', title: 'who dis?' },
+	{ id: 'hello', num: 'I', title: 'Intro' },
 	{ id: 'projects', num: 'II', title: 'Projects' },
 	{ id: 'work', num: 'III', title: 'Work' },
 	{ id: 'toolkit', num: 'IV', title: 'Toolkit' },
@@ -80,7 +80,7 @@ const chapters = [
 								))
 							}
 							<li class="contents__cta">
-								<a href="#say-hello">Say hello</a>
+								<a href="#say-hello">Reach me here!</a>
 							</li>
 						</ol>
 					</nav>
@@ -89,7 +89,7 @@ const chapters = [
 		</header>
 
 		<!-- I · HELLO ------------------------------------------------------- -->
-		<div class="chapter ground-paper2" id="hello" data-chapter="I" data-title="Hello" data-ground="paper2">
+		<div class="chapter ground-paper2" id="hello" data-chapter="I" data-title="Intro" data-ground="paper2">
 			<section data-sc-act="flow" class="sc-wrap spread spread--hello">
 				<figure class="fig fig--portrait" data-sc-reveal="up" data-sc-reveal-at="0.02 0.3">
 					<div class="fig__frame">
@@ -106,7 +106,7 @@ const chapters = [
 				</figure>
 				<div class="hello__text">
 					<h2 class="chapter-title" data-sc-in>
-						<span class="chapter-title__num">I</span>Hello.
+						<span class="chapter-title__num">I</span>Intro.
 					</h2>
 					<div class="prose" data-sc-in data-sc-stagger="60">
 						<p class="sc-lede">{about[0]}</p>
@@ -358,9 +358,9 @@ const chapters = [
 		<!-- Pass 2: the pause ("So, what are you hiring for?") and the bridge go here. -->
 
 		<!-- SAY HELLO · colophon ------------------------------------------ -->
-		<footer class="chapter ground-paper grid-paper colophon" id="say-hello" data-chapter="" data-title="Say hello" data-ground="paper">
+		<footer class="chapter ground-paper grid-paper colophon" id="say-hello" data-chapter="" data-title="Reach me here!" data-ground="paper">
 			<section data-sc-act="flow" class="sc-wrap colophon__inner">
-				<h2 class="chapter-title chapter-title--xl" data-sc-in>Say hello.</h2>
+				<h2 class="chapter-title chapter-title--xl" data-sc-in>Reach me here!</h2>
 				<p class="colophon__text sc-lede" data-sc-in>
 					If you are hiring for a role that sits between people, design and code, I would like to hear about it. Write to
 					me at <a href={`mailto:${person.email}`}>{person.email}</a>, or find me on <a
