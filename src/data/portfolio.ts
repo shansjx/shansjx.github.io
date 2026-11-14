@@ -117,7 +117,7 @@ export const featuredProjects: FeaturedProject[] = [
 				w: 492,
 				h: 380,
 				alt: 'A coloured pencil sketch of a two-storey display box, with a red line tracing the car route through campus scenes.',
-				caption: 'The concept sketch.',
+				caption: 'The concept sketch (drawn by me).',
 			},
 			{
 				src: '/img/thrive-thru-2.webp',
@@ -136,7 +136,7 @@ export const earlierProjects: IndexItem[] = [
 		when: '2025',
 		name: 'Hack&Roll',
 		context: 'Hackathon',
-		line: 'A prototype app that lets friends recommend restaurants to each other.',
+		line: 'A prototype app that lets friends recommend restaurants to each other, with sharing reviews and ratings to each other.',
 	},
 	{
 		when: '2023',
