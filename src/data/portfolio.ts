@@ -49,8 +49,10 @@ export const person = {
 	fullName: 'Soh Jin Xin Shana',
 	line: 'I work between people, design and code.',
 	meta: 'Computer Science & Design, SUTD. Graduating June 2027.',
+	seeking: 'Looking for graduate full-time roles from mid-2027.',
 	email: 'shanasjx@gmail.com',
 	linkedin: 'https://www.linkedin.com/in/shanasjx',
+	github: 'https://github.com/shansjx',
 	shop: 'https://beacons.ai/shan.artz',
 };
 
@@ -62,14 +64,14 @@ export const about = [
 
 export const education = [
 	{
-		school: 'Singapore University of Technology & Design',
+		school: 'Singapore University of Technology and Design',
 		what: 'BEng Computer Science and Design',
 		when: '2023 to 2027',
 		note: 'CGPA 3.96 / 5.0',
 	},
 	{
 		school: 'University of Newcastle, Australia',
-		what: 'Global Exchange Program',
+		what: 'Global Exchange Programme',
 		when: 'Jan to May 2026',
 		note: '2 High Distinctions, 2 Distinctions',
 	},
@@ -90,7 +92,7 @@ export const featuredProjects: FeaturedProject[] = [
 		tools: ['Java', 'Spring Boot', 'Android', 'OpenAI API'],
 		summary:
 			'An online multiplayer tabletop RPG for Android, with an AI game master narrating the story as you play.',
-		role: 'I led front-end product development: the core gameplay loops, the MVVM architecture, and the client logic that keeps real-time dialogue and combat in step between players.',
+		role: 'I led the client side: the Android UI design, the core gameplay loops, the MVVM architecture, and the concurrent game logic that keeps real-time dialogue and combat in step between players.',
 		figures: [
 			{
 				src: '/img/dicerealm-booth.webp',
@@ -132,6 +134,12 @@ export const featuredProjects: FeaturedProject[] = [
 
 // Older and smaller work. Kept on purpose: the site is the full backlog.
 export const earlierProjects: IndexItem[] = [
+	{
+		when: '2026',
+		name: 'FIDO2 passkey architectures',
+		context: 'Cybersecurity research',
+		line: 'Academic research on FIDO2 passkey deployments: authentication architectures, access control models and risk-based operational controls.',
+	},
 	{
 		when: '2025',
 		name: 'Hack&Roll',
@@ -193,13 +201,15 @@ export const roles: Role[] = [
 		org: 'NUS City Syntax Lab',
 		title: 'Software & Product Engineer Intern',
 		when: 'May 2026 to now',
-		lede: 'Requirements contact and engineer on the Singapore Building Carbon Calculator.',
+		lede: 'Requirements contact and full-stack engineer on the Singapore Building Carbon Calculator.',
 		points: [
 			'Turn feedback from government agencies, researchers and testers into prioritised features we can actually build, in short agile iterations.',
-			'Integrated Stripe end to end in NestJS. I chose embedded checkout over a hosted redirect to keep people in the app, with signature-verified webhooks and session-level idempotency so credits arrive exactly once.',
-			'Designed a credit-wallet pricing model, with margins checked against the Stability AI inference costs underneath it.',
-			'Moved staging and production from Supabase to AWS RDS (PostgreSQL 15) with Terraform workspaces, and added app-wide rate limiting.',
-			"Started the team's planning documents: scope, milestones and action plans.",
+			'Audited our port of the M&E carbon workbook against the source spreadsheet, cell by cell, across 25 product calculators (chillers, lifts, solar PV and more). Added CI tests for every dropdown, reference number and country row, and co-maintained a 67-entry defect log for the workbook owner, NUS ESI.',
+			"Added parity tests so the browser and the server always produce the same carbon figures, and pinned each project to the workbook version it was created under, so a locked project's results never change.",
+			'On the rebuilt v2 app: Google and Singpass (sgID) sign-in, one team per project with role-based access (Viewer, Editor, Admin, Owner) enforced on every backend route, and live collaboration over Server-Sent Events.',
+			'Integrated Stripe end to end in NestJS. I chose embedded checkout over a hosted redirect to keep people in the app, resolved prices on the server, and used a unique constraint on transaction IDs so credits arrive exactly once, even for duplicate or delayed bank-transfer events. I also designed the credit-wallet pricing, with margins checked against Stability AI inference costs.',
+			'Moved staging and production from Supabase to AWS RDS (PostgreSQL 17.6), wrote the Terraform for both, made database migrations an explicit step with runbooks, and added app-wide rate limiting.',
+			"Started the team's planning documents: scope, timelines, milestones and action plans.",
 		],
 		links: [{ label: 'SBCC contributors', href: 'https://carboncalculator.sg/about' }],
 	},
@@ -237,10 +247,10 @@ export const roles: Role[] = [
 		org: 'Zing Experiential Studio',
 		title: 'Multimedia Experiential Developer Intern',
 		when: 'May to Jul 2024',
-		lede: 'Interactive work for live audiences, including an education experience that engaged {count:70000}+ visitors.',
+		lede: 'Interactive pieces for exhibitions and campaigns, including a touchscreen used by {count:1000}+ delegates at the World Cities Summit.',
 		points: [
-			'Built a high-fidelity Next.js prototype of a gamified education platform, owning the core screens and user flow.',
-			'Developed an animated touchscreen in Unity for the World Cities Summit, used by 1,000+ delegates exploring ESG frameworks.',
+			'Built the first-iteration prototype of a gamified education platform that went on to engage 70,000+ visitors. It was a high-fidelity Next.js build (TypeScript, Tailwind CSS), and I owned the core UI and user flow.',
+			'Animated the summit touchscreen in Unity (C#, LeanTween), walking delegates through ESG frameworks.',
 			'Published a Spark AR Instagram filter for a sustainability campaign, and set up Google Analytics tags for an e-commerce brand.',
 			'Presented milestones in client meetings and came back with the changes.',
 		],
@@ -304,6 +314,12 @@ export const elsewhere: IndexItem[] = [
 		line: 'Also designed fundraising merchandise for the Cat Appreciation Club, and co-designed cohort T-shirts.',
 	},
 	{
+		when: '2023 to 24',
+		name: 'SC08 class committee, SUTD',
+		context: 'Events & Welfare I/C',
+		line: 'Planned class bonding events, and designed the publicity and cohort merchandise.',
+	},
+	{
 		when: '2022',
 		name: 'Youth Camp Committee',
 		context: 'Publicity I/C',
@@ -325,16 +341,32 @@ export const elsewhere: IndexItem[] = [
 
 export const toolkit = [
 	{ group: 'Languages', items: ['Python', 'Java', 'TypeScript', 'JavaScript', 'C#', 'SQL', 'HTML', 'CSS'] },
-	{ group: 'Frameworks', items: ['Next.js', 'React', 'Node.js', 'NestJS', 'Spring Boot', 'Tailwind CSS', 'Unity'] },
+	{
+		group: 'Frameworks',
+		items: ['Next.js', 'React', 'React Native', 'Node.js', 'NestJS', 'Spring Boot', 'Tailwind CSS', 'Unity'],
+	},
 	{
 		group: 'Cloud & data',
-		items: ['AWS (RDS)', 'Terraform', 'PostgreSQL', 'Supabase', 'TypeORM', 'REST APIs', 'Stripe API'],
+		items: ['AWS (RDS)', 'Terraform', 'PostgreSQL', 'Supabase', 'TypeORM', 'Database migrations', 'CI testing'],
+	},
+	{
+		group: 'Backend & APIs',
+		items: ['REST APIs', 'Stripe API', 'Webhooks', 'Role-based access control', 'Server-Sent Events', 'Singpass (sgID)'],
 	},
 	{
 		group: 'Product & people',
-		items: ['Requirements gathering', 'Stakeholder management', 'User interviews', 'UAT', 'Agile iteration', 'Prototyping'],
+		items: [
+			'Requirements gathering',
+			'Stakeholder management',
+			'User interviews',
+			'UAT',
+			'Agile iteration',
+			'Prototyping',
+			'Runbooks',
+		],
 	},
-	{ group: 'Design & tools', items: ['Figma', 'Procreate', 'Git'] },
+	{ group: 'Domain', items: ['Embodied & operational carbon', 'Green Mark 2021', 'IFC / RVT (BIM)'] },
+	{ group: 'Design & tools', items: ['Figma', 'Procreate', 'Git', 'GitHub', 'Canva'] },
 ];
 
 // The to-scale figure. Months are "YYYY-MM". Omit `to` for an ongoing row.

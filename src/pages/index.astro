@@ -40,8 +40,8 @@ const fig = () => ++figNo;
 
 const chapters = [
 	{ id: 'hello', num: 'I', title: 'Intro' },
-	{ id: 'projects', num: 'II', title: 'Projects' },
-	{ id: 'work', num: 'III', title: 'Work' },
+	{ id: 'work', num: 'II', title: 'Work' },
+	{ id: 'projects', num: 'III', title: 'Projects' },
 	{ id: 'toolkit', num: 'IV', title: 'Toolkit' },
 ];
 ---
@@ -70,12 +70,26 @@ const chapters = [
 		<!-- TITLE PAGE ------------------------------------------------------ -->
 		<header id="top" class="chapter ground-paper grid-paper title-page" data-chapter="" data-title="" data-ground="paper">
 			<section data-sc-act="flow" class="title-page__inner sc-wrap">
-				<p class="title-page__meta">{person.meta}</p>
+				<div class="title-page__top">
+					<p class="title-page__meta">{person.meta}</p>
+					<button type="button" class="treat" data-treat aria-label="Give the cat a treat">
+						<svg class="treat__fish" viewBox="0 0 28 20" aria-hidden="true" focusable="false">
+							<path class="treat__body" d="M3 10 C7 3.5 16 3.5 20 10 C16 16.5 7 16.5 3 10 Z" />
+							<path class="treat__fin" d="M20 10 L25.5 5.5 L25.5 14.5 Z" />
+							<path class="treat__gill" d="M9.5 6.8 q-2 3.2 0 6.4" />
+							<circle class="treat__eye" cx="6.8" cy="9.2" r="1" />
+						</svg>
+					</button>
+					<p class="cat-say" data-cat-say aria-live="polite"></p>
+				</div>
 				<h1 class="name">
 					<span class="name__text">{person.name}</span><Cat class="name__cat" />
 				</h1>
 				<div class="title-page__foot" data-sc-in data-sc-stagger="70">
-					<p class="title-page__line">{person.line}</p>
+					<div>
+						<p class="title-page__line">{person.line}</p>
+						<p class="title-page__seeking">{person.seeking}</p>
+					</div>
 					<nav class="contents" aria-label="Contents">
 						<ol>
 							{
@@ -141,91 +155,11 @@ const chapters = [
 			</section>
 		</div>
 
-		<!-- II · PROJECTS --------------------------------------------------- -->
-		<div class="chapter ground-paper" id="projects" data-chapter="II" data-title="Projects" data-ground="paper">
-			<section data-sc-act="flow" class="sc-wrap opener">
-				<h2 class="chapter-title chapter-title--xl" data-sc-in>
-					<span class="chapter-title__num">II</span>Things I've made.
-				</h2>
-			</section>
-
-			{
-				featuredProjects.map((p, i) => (
-					<section data-sc-act="flow" class:list={['sc-wrap', 'spread', 'project', i % 2 ? 'project--b' : 'project--a']}>
-						<div class="project__figs">
-							{p.figures.map((f, j) => (
-								<figure
-									class:list={['fig', `fig--${j}`]}
-									data-sc-reveal={j ? 'left' : 'up'}
-									data-sc-reveal-at={j ? '0.12 0.4' : '0.04 0.32'}
-								>
-									<div class="fig__frame">
-										<img src={f.src} width={f.w} height={f.h} alt={f.alt} loading="lazy" decoding="async" />
-									</div>
-									<figcaption>
-										<span class="fig__no">Fig. {fig()}</span> {f.caption}
-									</figcaption>
-								</figure>
-							))}
-						</div>
-						<div class="project__text" data-sc-in data-sc-stagger="60">
-							<h3 class="entry-title">{p.name}</h3>
-							<p class="entry-meta">
-								<span>{p.when}</span>
-								<span>{p.context}</span>
-								{p.team && <span>{p.team}</span>}
-							</p>
-							<p class="sc-lede">{p.summary}</p>
-							<p class="entry-body">{p.role}</p>
-							<ul class="tools" aria-label="Tools">
-								{p.tools.map((t) => (
-									<li>{t}</li>
-								))}
-							</ul>
-							{p.links?.map((l) => (
-								<a class="ref" href={l.href} rel="noopener" target="_blank">
-									{l.label}
-								</a>
-							))}
-						</div>
-					</section>
-				))
-			}
-
-			<section data-sc-act="flow" class="sc-wrap backlog">
-				<h3 class="backlog__title" data-sc-in>Earlier, and smaller</h3>
-				<ol class="index" data-sc-in data-sc-stagger="40">
-					{
-						earlierProjects.map((it) => (
-							<li class="index__row">
-								<span class="index__when">{it.when}</span>
-								<span class="index__name">
-									{it.name}
-									<span class="index__context">{it.context}</span>
-								</span>
-								<span class="index__line">
-									{it.line}
-									{it.tools && <span class="index__tools">{it.tools}</span>}
-								</span>
-								<span class="index__link">
-									{it.link && (
-										<a class="ref" href={it.link.href} rel="noopener" target="_blank">
-											{it.link.label}
-										</a>
-									)}
-								</span>
-							</li>
-						))
-					}
-				</ol>
-			</section>
-		</div>
-
-		<!-- III · WORK ------------------------------------------------------ -->
-		<div class="chapter ground-paper2" id="work" data-chapter="III" data-title="Work" data-ground="paper2">
+		<!-- II · WORK ------------------------------------------------------- -->
+		<div class="chapter ground-paper" id="work" data-chapter="II" data-title="Work" data-ground="paper">
 			<section data-sc-act="flow" class="sc-wrap opener opener--work">
 				<h2 class="chapter-title chapter-title--xl" data-sc-in>
-					<span class="chapter-title__num">III</span>Where I've worked.
+					<span class="chapter-title__num">II</span>Where I've worked.
 				</h2>
 			</section>
 
@@ -339,6 +273,86 @@ const chapters = [
 			</section>
 		</div>
 
+		<!-- III · PROJECTS -------------------------------------------------- -->
+		<div class="chapter ground-paper2" id="projects" data-chapter="III" data-title="Projects" data-ground="paper2">
+			<section data-sc-act="flow" class="sc-wrap opener">
+				<h2 class="chapter-title chapter-title--xl" data-sc-in>
+					<span class="chapter-title__num">III</span>Things I've made.
+				</h2>
+			</section>
+
+			{
+				featuredProjects.map((p, i) => (
+					<section data-sc-act="flow" class:list={['sc-wrap', 'spread', 'project', i % 2 ? 'project--b' : 'project--a']}>
+						<div class="project__figs">
+							{p.figures.map((f, j) => (
+								<figure
+									class:list={['fig', `fig--${j}`]}
+									data-sc-reveal={j ? 'left' : 'up'}
+									data-sc-reveal-at={j ? '0.12 0.4' : '0.04 0.32'}
+								>
+									<div class="fig__frame">
+										<img src={f.src} width={f.w} height={f.h} alt={f.alt} loading="lazy" decoding="async" />
+									</div>
+									<figcaption>
+										<span class="fig__no">Fig. {fig()}</span> {f.caption}
+									</figcaption>
+								</figure>
+							))}
+						</div>
+						<div class="project__text" data-sc-in data-sc-stagger="60">
+							<h3 class="entry-title">{p.name}</h3>
+							<p class="entry-meta">
+								<span>{p.when}</span>
+								<span>{p.context}</span>
+								{p.team && <span>{p.team}</span>}
+							</p>
+							<p class="sc-lede">{p.summary}</p>
+							<p class="entry-body">{p.role}</p>
+							<ul class="tools" aria-label="Tools">
+								{p.tools.map((t) => (
+									<li>{t}</li>
+								))}
+							</ul>
+							{p.links?.map((l) => (
+								<a class="ref" href={l.href} rel="noopener" target="_blank">
+									{l.label}
+								</a>
+							))}
+						</div>
+					</section>
+				))
+			}
+
+			<section data-sc-act="flow" class="sc-wrap backlog">
+				<h3 class="backlog__title" data-sc-in>Earlier, and smaller</h3>
+				<ol class="index" data-sc-in data-sc-stagger="40">
+					{
+						earlierProjects.map((it) => (
+							<li class="index__row">
+								<span class="index__when">{it.when}</span>
+								<span class="index__name">
+									{it.name}
+									<span class="index__context">{it.context}</span>
+								</span>
+								<span class="index__line">
+									{it.line}
+									{it.tools && <span class="index__tools">{it.tools}</span>}
+								</span>
+								<span class="index__link">
+									{it.link && (
+										<a class="ref" href={it.link.href} rel="noopener" target="_blank">
+											{it.link.label}
+										</a>
+									)}
+								</span>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+		</div>
+
 		<!-- IV · TOOLKIT ---------------------------------------------------- -->
 		<div class="chapter ground-cobalt" id="toolkit" data-chapter="IV" data-title="Toolkit" data-ground="cobalt">
 			<section data-sc-act="flow" class="sc-wrap toolkit">
@@ -376,7 +390,7 @@ const chapters = [
 						href={person.linkedin}
 						rel="noopener"
 						target="_blank">LinkedIn</a
-					>.{resumeHref && <> My <a href={resumeHref}>resume</a> is here too.</>}
+					> and <a href={person.github} rel="noopener" target="_blank">GitHub</a>.{resumeHref && <> My <a href={resumeHref}>resume</a> is here too.</>}
 				</p>
 				<CatAsleep class="colophon__cat" />
 				<p class="colophon__print">
@@ -826,6 +840,32 @@ const chapters = [
 		text-wrap: balance;
 		max-width: 22ch;
 	}
+	.title-page__seeking {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+		margin: var(--sc-4) 0 0;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+		letter-spacing: 0.02em;
+		color: var(--sc-ink);
+	}
+	.title-page__seeking::before {
+		content: '';
+		flex: none;
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 50%;
+		background: var(--sc-accent);
+		translate: 0 -0.05rem;
+	}
+	.title-page__top {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--sc-3) var(--sc-5);
+	}
 	.title-page__meta {
 		margin: 0;
 		font-family: var(--sc-font-mono);
@@ -914,6 +954,251 @@ const chapters = [
 	}
 	.cat__pupil {
 		transition: transform 90ms linear;
+	}
+	/* petting and feeding (page script toggles the states) */
+	.name__cat {
+		cursor: pointer;
+		user-select: none;
+		-webkit-user-select: none;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.cat__face {
+		transform-box: view-box;
+		transform-origin: 50px 64px;
+		transition: transform 260ms var(--sc-ease-out);
+	}
+	.cat .cat__happy-eyes,
+	.cat .cat__mouth-open {
+		opacity: 0;
+		transition: opacity 120ms linear;
+	}
+	.cat .cat__mouth-open {
+		fill: var(--sc-accent);
+		stroke-width: 1.6;
+	}
+	.cat .cat__eyes,
+	.cat .cat__mouth {
+		transition: opacity 120ms linear;
+	}
+	.cat.is-happy .cat__eyes {
+		opacity: 0;
+	}
+	.cat.is-happy .cat__happy-eyes {
+		opacity: 1;
+	}
+	.cat.is-happy .cat__face {
+		transform: rotate(-6deg);
+	}
+	.cat.is-happy .cat__blush,
+	.cat.is-eating .cat__blush {
+		opacity: 0.6;
+	}
+	.cat.is-eating .cat__mouth,
+	.cat.is-expecting .cat__mouth {
+		opacity: 0;
+	}
+	.cat.is-eating .cat__mouth-open,
+	.cat.is-expecting .cat__mouth-open {
+		opacity: 1;
+	}
+	.cat.is-expecting .cat__face {
+		transform: translateY(-2px) scale(1.04);
+	}
+
+	.treat {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0.3rem 0.75rem 0.3rem 0.5rem;
+		border: 1px dashed var(--sc-hairline-strong);
+		border-radius: 999px;
+		background: var(--paper);
+		color: var(--sc-ink-soft);
+		font: inherit;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+		letter-spacing: 0.02em;
+		cursor: grab;
+		touch-action: none;
+		user-select: none;
+		-webkit-user-select: none;
+		transition: border-color 140ms var(--sc-ease-out), color 140ms var(--sc-ease-out);
+	}
+	.treat:hover {
+		border-color: var(--cobalt);
+		color: var(--sc-ink);
+	}
+	.treat:focus-visible {
+		outline: 2px solid var(--cobalt);
+		outline-offset: 3px;
+	}
+	.treat.is-dragging {
+		cursor: grabbing;
+	}
+	.treat__fish {
+		width: 1.75rem;
+		height: 1.25rem;
+		flex: none;
+		overflow: visible;
+		transition: opacity 160ms linear;
+	}
+	.treat.is-dragging .treat__fish,
+	.treat.is-empty .treat__fish {
+		opacity: 0;
+	}
+	.treat.is-refilled .treat__fish {
+		animation: treat-refill 420ms var(--sc-ease-out);
+	}
+	.treat__fish path,
+	.treat__fish circle {
+		fill: color-mix(in oklab, var(--sc-accent) 30%, var(--paper));
+		stroke: var(--cobalt);
+		stroke-width: 1.5;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.treat__fish .treat__gill {
+		fill: none;
+		stroke-width: 1.1;
+	}
+	.treat__fish .treat__eye {
+		fill: var(--cobalt);
+		stroke: none;
+	}
+	/* the treat in your hand while dragging */
+	.treat-held {
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 60;
+		width: 2.6rem;
+		height: 1.9rem;
+		pointer-events: none;
+		filter: drop-shadow(0 4px 6px color-mix(in oklab, var(--cobalt) 25%, transparent));
+	}
+	.treat-held .treat__fish {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* hearts and words that float up from the cat */
+	.cat-pop {
+		position: absolute;
+		z-index: 60;
+		pointer-events: none;
+		font-family: var(--sc-font-mono);
+		font-size: var(--sc-t-sm);
+		font-weight: 600;
+		color: var(--cobalt);
+		white-space: nowrap;
+		animation: cat-pop 1100ms var(--sc-ease-out) forwards;
+	}
+	.cat-pop svg {
+		display: block;
+		width: 1.1rem;
+		height: 1.1rem;
+		fill: var(--sc-accent);
+	}
+	.cat-say {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.cat.is-happy {
+			animation: purr 0.16s linear infinite;
+		}
+		.cat.is-eating .cat__face {
+			animation: chomp 0.3s ease-in-out 3;
+		}
+		.cat.is-full .cat__face {
+			animation: no-thanks 0.5s ease-in-out 2;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cat-pop {
+			animation-name: cat-pop-still;
+		}
+		.cat__face {
+			transition: none;
+		}
+	}
+	@keyframes purr {
+		0%,
+		100% {
+			translate: 0 0;
+		}
+		50% {
+			translate: 0.4px 0;
+		}
+	}
+	@keyframes chomp {
+		0%,
+		100% {
+			transform: scale(1, 1);
+		}
+		50% {
+			transform: scale(1.05, 0.93);
+		}
+	}
+	@keyframes no-thanks {
+		0%,
+		100% {
+			transform: rotate(0deg);
+		}
+		25% {
+			transform: rotate(-8deg);
+		}
+		75% {
+			transform: rotate(8deg);
+		}
+	}
+	@keyframes cat-pop {
+		0% {
+			opacity: 0;
+			transform: translate(-50%, 0) scale(0.6);
+		}
+		18% {
+			opacity: 1;
+			transform: translate(-50%, -10px) scale(1);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(calc(-50% + var(--drift, 0px)), -56px) scale(1);
+		}
+	}
+	@keyframes cat-pop-still {
+		0% {
+			opacity: 0;
+			transform: translate(-50%, -10px);
+		}
+		20%,
+		70% {
+			opacity: 1;
+			transform: translate(-50%, -10px);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(-50%, -10px);
+		}
+	}
+	@keyframes treat-refill {
+		0% {
+			opacity: 0;
+			transform: scale(0.4);
+		}
+		70% {
+			opacity: 1;
+			transform: scale(1.15);
+		}
+		100% {
+			transform: scale(1);
+		}
 	}
 	.cat--asleep .cat__ground {
 		stroke-width: 1.2;
@@ -1671,6 +1956,199 @@ const chapters = [
 		};
 		addEventListener('pointermove', onMove, { passive: true });
 		addEventListener('pointerdown', onMove, { passive: true });
+	}
+
+	// Pet the cat (stroke it with the mouse, or click or tap it) and feed it
+	// (drag the fish onto it, or press the button to toss one over).
+	const cat = document.querySelector<SVGSVGElement>('[data-cat]');
+	const treat = document.querySelector<HTMLButtonElement>('[data-treat]');
+	const say = document.querySelector<HTMLElement>('[data-cat-say]');
+	if (cat) {
+		const HEART =
+			'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C5 15 2 11.5 2 8c0-3 2.5-5 5-5 2 0 4 1.5 5 3 1-1.5 3-3 5-3 2.5 0 5 2 5 5 0 3.5-3 7-10 13Z"/></svg>';
+		const timers = new Map<string, number>();
+		const flash = (state: string, ms: number) => {
+			cat.classList.add(state);
+			clearTimeout(timers.get(state));
+			timers.set(state, window.setTimeout(() => cat.classList.remove(state), ms));
+		};
+		const announce = (text: string) => {
+			if (say) say.textContent = text;
+		};
+		// A point on the cat in page coordinates, from viewBox units.
+		const at = (x: number, y: number) => {
+			const r = cat.getBoundingClientRect();
+			return { x: r.left + (x / 120) * r.width, y: r.top + (y / 120) * r.height };
+		};
+		const pop = (content: string, x: number, y: number, isText = false) => {
+			const el = document.createElement('span');
+			el.className = 'cat-pop';
+			if (isText) el.textContent = content;
+			else el.innerHTML = content;
+			el.style.left = `${x + scrollX}px`;
+			el.style.top = `${y + scrollY}px`;
+			el.style.setProperty('--drift', `${Math.round(Math.random() * 30 - 15)}px`);
+			el.addEventListener('animationend', () => el.remove());
+			document.body.append(el);
+		};
+
+		let pets = 0;
+		let lastPet = 0;
+		const pet = () => {
+			const now = performance.now();
+			if (now - lastPet < 450 || cat.classList.contains('is-eating')) return;
+			lastPet = now;
+			pets++;
+			flash('is-happy', 1600);
+			const p = at(50 + Math.random() * 30 - 15, 22);
+			pop(HEART, p.x, p.y);
+			if (pets % 4 === 0) {
+				const q = at(88, 40);
+				pop('prrr', q.x, q.y, true);
+			}
+			announce(pets % 4 === 0 ? 'The cat purrs.' : 'You pet the cat.');
+		};
+		// Stroking: enough mouse travel across the cat counts as a pet.
+		let stroke = 0;
+		cat.addEventListener('pointermove', (e) => {
+			if (e.pointerType !== 'mouse') return;
+			stroke += Math.abs(e.movementX) + Math.abs(e.movementY);
+			if (stroke > 90) {
+				stroke = 0;
+				pet();
+			}
+		});
+		cat.addEventListener('pointerleave', () => (stroke = 0));
+		cat.addEventListener('pointerdown', pet);
+		// Quick repeat clicks count as double and triple clicks, which would select
+		// the nearby text. The cat is not text, so its clicks never start a selection.
+		cat.addEventListener('mousedown', (e) => e.preventDefault());
+
+		// Feeding. After five treats in a row the cat is full for a while.
+		let fed = 0;
+		let fullTimer = 0;
+		const eat = () => {
+			clearTimeout(fullTimer);
+			fullTimer = window.setTimeout(() => (fed = 0), 30000);
+			const m = at(50, 40);
+			if (fed >= 5) {
+				flash('is-full', 1100);
+				pop('so full', m.x, m.y - 10, true);
+				announce('The cat is too full to eat any more.');
+				return;
+			}
+			fed++;
+			cat.classList.remove('is-happy');
+			flash('is-eating', 900);
+			pop('nom', m.x, m.y - 10, true);
+			window.setTimeout(() => {
+				flash('is-happy', 1800);
+				pop(HEART, m.x - 14, m.y);
+				pop(HEART, m.x + 14, m.y - 6);
+			}, 900);
+			announce('The cat eats the treat. Nom.');
+		};
+
+		if (treat) {
+			const fish = treat.querySelector('.treat__fish');
+			const refill = (delay: number) => {
+				treat.classList.add('is-empty');
+				window.setTimeout(() => {
+					treat.classList.remove('is-empty', 'is-dragging');
+					treat.classList.add('is-refilled');
+					window.setTimeout(() => treat.classList.remove('is-refilled'), 450);
+				}, delay);
+			};
+			const makeHeld = () => {
+				const held = document.createElement('div');
+				held.className = 'treat-held';
+				if (fish) held.append(fish.cloneNode(true));
+				document.body.append(held);
+				return held;
+			};
+			// Centre the held fish on a viewport point. left/top, not transform, so the
+			// fly animation's own translate moves it from here.
+			const place = (el: HTMLElement, x: number, y: number) => {
+				el.style.left = `${x - el.offsetWidth / 2}px`;
+				el.style.top = `${y - el.offsetHeight / 2}px`;
+			};
+			const overCat = (x: number, y: number) => {
+				const r = cat.getBoundingClientRect();
+				const pad = r.width * 0.25;
+				return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad;
+			};
+
+			let held: HTMLElement | null = null;
+			let startX = 0;
+			let startY = 0;
+			let skipClick = false;
+			treat.addEventListener('pointerdown', (e) => {
+				if (e.button !== 0 || treat.classList.contains('is-empty')) return;
+				startX = e.clientX;
+				startY = e.clientY;
+				treat.setPointerCapture(e.pointerId);
+			});
+			treat.addEventListener('pointermove', (e) => {
+				if (!treat.hasPointerCapture(e.pointerId)) return;
+				if (!held) {
+					if (Math.hypot(e.clientX - startX, e.clientY - startY) < 6) return;
+					held = makeHeld();
+					treat.classList.add('is-dragging');
+				}
+				place(held, e.clientX, e.clientY);
+				cat.classList.toggle('is-expecting', overCat(e.clientX, e.clientY));
+			});
+			const drop = (e: PointerEvent) => {
+				if (!held) return;
+				const landed = e.type === 'pointerup' && overCat(e.clientX, e.clientY);
+				held.remove();
+				held = null;
+				cat.classList.remove('is-expecting');
+				skipClick = true;
+				window.setTimeout(() => (skipClick = false), 0);
+				if (landed) {
+					eat();
+					refill(1200);
+				} else {
+					treat.classList.remove('is-dragging');
+				}
+			};
+			treat.addEventListener('pointerup', drop);
+			treat.addEventListener('pointercancel', drop);
+
+			// A click or key press without a drag sends the fish from the button
+			// straight to the cat's mouth.
+			treat.addEventListener('click', () => {
+				if (skipClick || treat.classList.contains('is-empty')) return;
+				treat.classList.add('is-empty');
+				const home = fish?.getBoundingClientRect() ?? treat.getBoundingClientRect();
+				const fromX = home.left + home.width / 2;
+				const fromY = home.top + home.height / 2;
+				const to = at(50, 58);
+				if (reduce) {
+					eat();
+					refill(1200);
+					return;
+				}
+				cat.classList.add('is-expecting');
+				const flying = makeHeld();
+				place(flying, fromX, fromY);
+				flying
+					.animate(
+						[
+							{ translate: '0 0', scale: '1' },
+							{ translate: `${to.x - fromX}px ${to.y - fromY}px`, scale: '0.7' },
+						],
+						{ duration: 520, easing: 'cubic-bezier(0.5, 0, 0.3, 1)', fill: 'forwards' },
+					)
+					.finished.then(() => {
+						flying.remove();
+						cat.classList.remove('is-expecting');
+						eat();
+						refill(1200);
+					});
+			});
+		}
 	}
 
 	// Back to top: smooth unless reduced motion, then hand focus to the top of the page
